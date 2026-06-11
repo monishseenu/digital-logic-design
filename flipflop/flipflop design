@@ -1,0 +1,78 @@
+/*A Flip-Flop is a digital memory element that can store 1 bit of data (0 or 1).
+It has two stable states: 0 and 1
+A flip-flop changes its output only when a clock signal triggers it. */
+
+// D Flip-Flop - Transfers the data input to the output on a clock edge.
+module d_ff(
+    input clk,
+    input d,
+    output reg q
+);
+    always @(posedge clk)
+        q <= d;
+endmodule
+/*always @(posedge clk)
+
+This means they change state only when the clock goes 
+from 0 → 1 (positive edge).// Enter RTL Code */
+/*What is reg in Verilog?
+
+reg stands for register data type in Verilog.
+
+It is used to store a value until it is assigned a new value.
+A variable must be declared as reg when it is assigned inside an:
+always or initial */
+
+// SR Flip-Flop -Stores one bit using Set and Reset inputs.
+module sr_ff(
+    input clk,
+    input s,
+    input r,
+    output reg q
+);
+    always @(posedge clk)
+    begin
+        if (s && !r)
+            q <= 1'b1;
+        else if (!s && r)
+            q <= 1'b0;
+        else if (s && r)
+            q <= 1'bx;   // Invalid state
+    end
+endmodule
+
+
+// JK Flip-Flop - Improved SR flip-flop that eliminates the invalid state.
+module jk_ff(
+    input clk,
+    input j,
+    input k,
+    output reg q
+);
+    always @(posedge clk)
+    begin
+        case ({j,k})
+            2'b00: q <= q;      // No change
+            2'b01: q <= 1'b0;   // Reset
+            2'b10: q <= 1'b1;   // Set
+            2'b11: q <= ~q;     // Toggle
+        endcase
+    end
+endmodule
+
+
+/* T Flip-Flop - Changes (toggles) its output state on
+ each clock pulse when T = 1.*/
+module t_ff(
+    input clk,
+    input t,
+    output reg q
+);
+    always @(posedge clk)
+    begin
+        if (t)
+            q <= ~q;
+        else
+            q <= q;
+    end
+endmodule
