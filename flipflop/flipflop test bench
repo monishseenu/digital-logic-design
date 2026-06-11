@@ -1,0 +1,81 @@
+module flipflop_tb;
+
+    reg clk;
+    reg d;
+    reg s, r;
+    reg j, k;
+    reg t;
+
+    wire q_d;
+    wire q_sr;
+    wire q_jk;
+    wire q_t;
+
+    // D Flip-Flop
+    d_ff d1 (
+        .clk(clk),
+        .d(d),
+        .q(q_d)
+    );
+
+    // SR Flip-Flop
+    sr_ff sr1 (
+        .clk(clk),
+        .s(s),
+        .r(r),
+        .q(q_sr)
+    );
+
+    // JK Flip-Flop
+    jk_ff jk1 (
+        .clk(clk),
+        .j(j),
+        .k(k),
+        .q(q_jk)
+    );
+
+    // T Flip-Flop
+    t_ff t1 (
+        .clk(clk),
+        .t(t),
+        .q(q_t)
+    );
+
+    // Clock Generation
+    initial begin
+        clk = 0;
+        forever #5 clk = ~clk;
+    end
+
+    // Test Inputs
+    initial begin
+
+        // D Flip-Flop
+        d = 0;
+        #10 d = 1;
+        #10 d = 0;
+
+        // SR Flip-Flop
+        s = 1; r = 0;
+        #10 s = 0; r = 1;
+        #10 s = 0; r = 0;
+
+        // JK Flip-Flop
+        j = 1; k = 0;
+        #10 j = 0; k = 1;
+        #10 j = 1; k = 1;
+
+        // T Flip-Flop
+        t = 1;
+        #20 t = 0;
+
+        #20 $finish;
+    end
+
+    // Display Outputs
+    initial begin
+        $monitor("Time=%0t | D=%b QD=%b | S=%b R=%b QSR=%b | J=%b K=%b QJK=%b | T=%b QT=%b",
+                 $time, d, q_d, s, r, q_sr, j, k, q_jk, t, q_t);
+    end
+
+endmodule// Enter testbench code
