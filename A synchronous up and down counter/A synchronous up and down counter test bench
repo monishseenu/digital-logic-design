@@ -1,0 +1,64 @@
+module tb_sync_up_down_counter;
+
+// 1. Declare signals to connect to the module
+reg clk, rst_n, up;
+reg [3:0] cnt;
+
+// 2. Instantiate the counter module
+sync_up_down_counter #(
+    .SIZE(4)
+) counter (
+    .clk(clk),
+    .rst_n(rst_n),
+    .up(up),
+    .cnt(cnt)
+);
+
+// 3. Clock generation (period = 10ns)
+initial begin
+    clk = 0;
+    forever #5 clk = ~clk;  // toggles every 5ns
+end
+
+// 4. Test logic
+initial begin
+    // Initialize inputs
+    rst_n = 0;
+    up = 1;
+    
+    // Release reset after 20ns
+    #20 rst_n = 1;
+    
+    // Test 1: Count UP for 6 cycles
+    #60;  // 6 clock cycles (6 * 10ns)
+    
+    // Test 2: Count DOWN for 4 cycles
+    up = 0;
+    #40;
+    
+    // Test 3: Count UP again for 5 cycles
+    up = 1;
+    #50;
+    
+    // Test 4: Reset the counter
+    rst_n = 0;
+    #20;
+    rst_n = 1;
+    
+    // End simulation
+    #50 $finish;
+end
+
+// 5. Monitor output (optional: print to console)
+initial begin
+    $monitor("Time=%t | rst_n=%b | up=%b | cnt=%b (%d)", 
+             $time, rst_n, up, cnt, cnt);
+end
+
+// 6. Optional: waveform dump for Vivado/ISE
+initial begin
+    $dumpfile("counter_dump.vcd");
+    $dumpvars(0, tb_sync_up_down_counter);
+end
+
+endmodule
