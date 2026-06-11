@@ -1,0 +1,11 @@
+module two_gates(
+    input A,
+    input B,
+    output AND_OUT,
+    output OR_OUT
+);
+
+assign AND_OUT = A & B;
+assign OR_OUT  = A | B;
+
+endmodule
