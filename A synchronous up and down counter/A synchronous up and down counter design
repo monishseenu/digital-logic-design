@@ -1,0 +1,29 @@
+/*A synchronous up/down counter:
+
+Counts forward (up) or backward (down) depending on
+ an input called UP/DOWN.
+Uses a common clock for all flip-flops,
+ so all bits change together at the same clock edge.
+Is faster and more reliable than an asynchronous 
+(ripple) counter because there is no ripple delay between flip-flops */
+module sync_up_down_counter #(
+    parameter SIZE = 4
+) (
+    input        clk,
+    input        rst_n,      // synchronous reset (active low)
+    input        up,         // 1 = up, 0 = down
+    output reg [SIZE-1:0] cnt
+);
+
+always @(posedge clk) begin
+    if (!rst_n)
+        cnt <= 4'h0;
+    else begin
+        if (up)
+            cnt <= cnt + 1'b1;
+        else
+            cnt <= cnt - 1'b1;
+    end
+end
+
+endmodule
